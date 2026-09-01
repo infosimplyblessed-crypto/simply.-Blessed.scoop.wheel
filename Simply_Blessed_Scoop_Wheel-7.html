@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simply Blessed - R10 Scoop Wheel</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff4ed;font-family:Georgia,serif;color:#4b3328;text-align:center}
+.wrap{max-width:760px;margin:auto;padding:16px}
+.card{background:#fffaf5;border:3px solid #d99aa2;border-radius:24px;padding:18px;box-shadow:0 5px 20px #0001}
+h1{margin:4px 0;color:#b85f6d;font-size:clamp(28px,7vw,48px);font-style:italic}
+.subtitle{font-weight:bold;letter-spacing:1px;margin-bottom:14px}
+.wheelbox{position:relative;width:min(92vw,620px);aspect-ratio:1;margin:auto}
+canvas{width:100%;height:100%;display:block}
+.pointer{position:absolute;top:-2px;left:50%;transform:translateX(-50%);z-index:2;width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:42px solid #b85f6d}
+button{border:0;background:#b85f6d;color:white;font-size:20px;font-weight:bold;border-radius:15px;padding:15px 24px;margin:12px 0;min-height:52px;cursor:pointer}
+button:disabled{opacity:.5}
+.result{font-size:18px;min-height:60px;margin:8px auto;padding:12px;border:1px dashed #d7b0a5;border-radius:12px;background:#fff}
+.result strong{display:block;color:#b85f6d;font-size:25px;margin-top:4px}
+.info{font-size:14px;line-height:1.5;margin-top:12px}
+.history{margin-top:14px;text-align:left;background:#fff5ee;border-radius:12px;padding:10px;max-height:180px;overflow:auto}
+.history b{color:#b85f6d}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+<h1>Simply Blessed</h1>
+<div class="subtitle">💗 SB SCOOP SPIN WHEEL 💗<br>15 SPINS</div>
+<div class="wheelbox">
+<div class="pointer"></div>
+<canvas id="wheel" width="700" height="700"></canvas>
+</div>
+<button id="spin">SPIN THE WHEEL</button>
+<div class="result" id="result">Your scoop awaits!<strong>Good luck! 💕</strong></div>
+<div class="info"><b>How it works:</b> Tap the button and the wheel randomly selects one item. Each selected item is removed, so every spin chooses a different item. Maximum 15 spins.</div>
+<div class="history" id="history"><b>Your selected scoops:</b><br></div>
+</div>
+</div>
+<script>
+const items=[
+"Glue","Pockets","Sticky Notes","Pearls","Mystery Gift","Rhinestones",
+"Wax Stickers","Novelty Pen","Mini Punch","Highlighter","Markers","Mini Ink Pad",
+"Mini Stamp","Frames","Tags","Die Cuts","Embossed Paper","Affirmations",
+"Alphabet","Leaves & Flowers","Stickers","Lace & Ribbons","Ephemera","Washi Tape",
+"Mini Notebook","Page Holders"
+];
+let available=[...items], spins=0, rotation=0, busy=false;
+const canvas=document.getElementById("wheel"),ctx=canvas.getContext("2d");
+const btn=document.getElementById("spin"),result=document.getElementById("result"),history=document.getElementById("history");
+const TAU=Math.PI*2;
+
+function draw(){
+ const c=350,r=320,n=items.length;
+ ctx.clearRect(0,0,700,700);
+ for(let i=0;i<n;i++){
+   const a0=-Math.PI/2+i*TAU/n,a1=a0+TAU/n,mid=(a0+a1)/2;
+   ctx.beginPath();ctx.moveTo(c,c);ctx.arc(c,c,r,a0,a1);ctx.closePath();
+   ctx.fillStyle=i%2?"#f0d5c8":"#f9e9dc";ctx.fill();
+   ctx.strokeStyle="#c99b89";ctx.lineWidth=2;ctx.stroke();
+   ctx.save();ctx.translate(c+Math.cos(mid)*r*.69,c+Math.sin(mid)*r*.69);
+   ctx.rotate(mid+Math.PI/2);ctx.fillStyle="#4b3328";
+   ctx.font="bold 15px Georgia";ctx.textAlign="center";ctx.textBaseline="middle";
+   const words=items[i].split(" ");
+   words.forEach((w,j)=>ctx.fillText(w,(j-(words.length-1)/2)*17,0));
+   ctx.restore();
+ }
+ ctx.beginPath();ctx.arc(c,c,75,0,TAU);ctx.fillStyle="#fffaf5";ctx.fill();
+ ctx.strokeStyle="#b85f6d";ctx.lineWidth=7;ctx.stroke();
+ ctx.fillStyle="#b85f6d";ctx.font="bold 20px Georgia";ctx.textAlign="center";
+ ctx.fillText("SB",c,c-5);ctx.font="bold 15px Georgia";ctx.fillText("SCOOPS",c,c+20);
+}
+function spin(){
+ if(busy||spins>=15||!available.length)return;
+ busy=true;btn.disabled=true;
+ const prize=available[Math.floor(Math.random()*available.length)];
+ const idx=items.indexOf(prize),n=items.length,seg=TAU/n;
+ const target=-(idx*seg+seg/2),cur=rotation%TAU;
+ let delta=target-cur;if(delta<0)delta+=TAU;
+ rotation+=TAU*(5+Math.floor(Math.random()*3))+delta;
+ canvas.style.transition="transform 4s cubic-bezier(.12,.75,.18,1)";
+ canvas.style.transform=`rotate(${rotation}rad)`;
+ setTimeout(()=>{
+   spins++;available=available.filter(x=>x!==prize);
+   const row=document.createElement("div");row.textContent=`${spins}. ${prize}`;history.appendChild(row);
+   result.innerHTML=`🎉 SCOOP SELECTED<strong>${prize}</strong>`;
+   busy=false;btn.disabled=spins>=15;
+   if(spins>=15)btn.textContent="15 SPINS COMPLETED";
+ },4100);
+}
+btn.addEventListener("click",spin);
+draw();
+</script>
+</body>
+</html>
