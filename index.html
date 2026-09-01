@@ -3,38 +3,407 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simply Blessed -  Scoop Wheel</title>
+<title>Simply Blessed Scoop Wheel</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#fff4ed;font-family:Georgia,serif;color:#4b3328;text-align:center}
-.wrap{max-width:760px;margin:auto;padding:16px}
-.card{background:#fffaf5;border:3px solid #d99aa2;border-radius:24px;padding:18px;box-shadow:0 5px 20px #0001}
-h1{margin:4px 0;color:#b85f6d;font-size:clamp(28px,7vw,48px);font-style:italic}
-.subtitle{font-weight:bold;letter-spacing:1px;margin-bottom:14px}
-.wheelbox{position:relative;width:min(92vw,620px);aspect-ratio:1;margin:auto}
-canvas{width:100%;height:100%;display:block}
-.pointer{position:absolute;top:-2px;left:50%;transform:translateX(-50%);z-index:2;width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:42px solid #b85f6d}
-button{border:0;background:#b85f6d;color:white;font-size:20px;font-weight:bold;border-radius:15px;padding:15px 24px;margin:12px 0;min-height:52px;cursor:pointer}
-button:disabled{opacity:.5}
-.result{font-size:18px;min-height:60px;margin:8px auto;padding:12px;border:1px dashed #d7b0a5;border-radius:12px;background:#fff}
-.result strong{display:block;color:#b85f6d;font-size:25px;margin-top:4px}
-.info{font-size:14px;line-height:1.5;margin-top:12px}
-.history{margin-top:14px;text-align:left;background:#fff5ee;border-radius:12px;padding:10px;max-height:180px;overflow:auto}
-.history b{color:#b85f6d}
+
+body{
+ margin:0;
+ background:#fff4ed;
+ font-family:Arial,sans-serif;
+ color:#4b3028;
+ text-align:center;
+}
+
+.wrap{
+ max-width:760px;
+ margin:auto;
+ padding:16px;
+}
+
+.card{
+ background:#fffaf5;
+ border:3px solid #f0b8aa;
+ border-radius:20px;
+ padding:18px;
+ box-shadow:0 5px 15px #0001;
+}
+
+h1{
+ color:#b85f6d;
+ margin:5px 0;
+ font-size:30px;
+}
+
+.subtitle{
+ font-weight:bold;
+ color:#76504a;
+ margin-bottom:15px;
+}
+
+input{
+ width:100%;
+ padding:13px;
+ margin:6px 0;
+ border:2px solid #e3aaa0;
+ border-radius:10px;
+ font-size:16px;
+}
+
+.wheelbox{
+ position:relative;
+ width:min(92vw,650px);
+ aspect-ratio:1;
+ margin:15px auto;
+}
+
+canvas{
+ width:100%;
+ height:100%;
+ display:block;
+}
+
+.pointer{
+ position:absolute;
+ top:-4px;
+ left:50%;
+ transform:translateX(-50%);
+ width:0;
+ height:0;
+ border-left:16px solid transparent;
+ border-right:16px solid transparent;
+ border-top:32px solid #b85f6d;
+ z-index:5;
+}
+
+button{
+ border:0;
+ border-radius:12px;
+ padding:14px 22px;
+ margin:6px;
+ font-size:17px;
+ font-weight:bold;
+ cursor:pointer;
+ background:#b85f6d;
+ color:white;
+}
+
+button:disabled{
+ opacity:.45;
+ cursor:not-allowed;
+}
+
+.result{
+ font-size:20px;
+ min-height:50px;
+ margin:12px 0;
+}
+
+.result strong{
+ display:block;
+ color:#b85f6d;
+ font-size:25px;
+}
+
+.history{
+ text-align:left;
+ background:#fff1eb;
+ border:2px solid #efc2b8;
+ border-radius:12px;
+ padding:12px;
+ margin-top:12px;
+}
+
+.history h2{
+ margin:0 0 8px;
+ color:#b85f6d;
+ font-size:20px;
+}
+
+.history ol{
+ margin:0;
+ padding-left:25px;
+}
+
+.info{
+ font-size:14px;
+ line-height:1.5;
+}
+
+.whatsapp{
+ background:#25a95b;
+}
 </style>
 </head>
+
 <body>
 <div class="wrap">
 <div class="card">
-<h1>Simply Blessed</h1>
-<div class="subtitle">💗 SB SCOOP SPIN WHEEL 💗<br>15 SPINS</div>
+
+<h1>🌸 Simply Blessed 🌸</h1>
+<div class="subtitle">SCOOP WHEEL</div>
+
+<input id="customer" type="text" placeholder="Customer name">
+<input id="order" type="text" placeholder="Order number">
+
 <div class="wheelbox">
 <div class="pointer"></div>
 <canvas id="wheel" width="700" height="700"></canvas>
 </div>
-<button id="spin">SPIN THE WHEEL</button>
-<div class="result" id="result">Your scoop awaits!<strong>Good luck! 💕</strong></div>
-<div class="info"><b>How it works:</b> Tap the button and the wheel randomly selects one item. Each selected item is removed, so every spin chooses a different item. Maximum 15 spins.</div>
+
+<button id="spin">🎡 SPIN THE WHEEL</button>
+
+<div class="result" id="result">
+Your scoop will appear here
+</div>
+
+<div class="info">
+<strong>15 spins available</strong><br>
+Each spin selects a different available item.
+</div>
+
+<div class="history">
+<h2>📋 Scoop Results</h2>
+<ol id="history"></ol>
+</div>
+
+<button class="whatsapp" id="send">
+📲 SEND RESULTS TO SIMPLY BLESSED
+</button>
+
+</div>
+</div>
+
+<script>
+
+const items=[
+"Glue",
+"Pockets",
+"Sticky Notes",
+"Pearls",
+"Mystery Gift",
+"Rhinestones",
+"Wax Stickers",
+"Novelty Pen",
+"Mystery Gift",
+"Highlighter",
+"Markers",
+"Bookmark",
+"Vintage Words",
+"Frames",
+"Tags",
+"Die Cuts",
+"Embossed Paper",
+"Affirmations",
+"Alphabet",
+"Leaves & Flowers",
+"Stickers",
+"Lace & Ribbons",
+"Ephemera",
+"Washi Tape",
+"Mini Notebook",
+"Page Holders"
+];
+
+let available=[...items];
+let results=[];
+let rotation=0;
+let busy=false;
+
+const canvas=document.getElementById("wheel");
+const ctx=canvas.getContext("2d");
+const btn=document.getElementById("spin");
+const result=document.getElementById("result");
+const history=document.getElementById("history");
+
+const TAU=Math.PI*2;
+
+function draw(){
+
+ const c=350;
+ const r=320;
+ const n=available.length;
+
+ ctx.clearRect(0,0,700,700);
+
+ for(let i=0;i<n;i++){
+
+   const a0=-Math.PI/2+i*TAU/n;
+   const a1=a0+TAU/n;
+
+   ctx.beginPath();
+   ctx.moveTo(c,c);
+   ctx.arc(c,c,r,a0,a1);
+   ctx.closePath();
+
+   ctx.fillStyle=i%2===0 ? "#f7c9c0" : "#f9e9dc";
+   ctx.fill();
+
+   ctx.strokeStyle="#c99b89";
+   ctx.lineWidth=2;
+   ctx.stroke();
+
+   ctx.save();
+   ctx.translate(c,c);
+   ctx.rotate(a0+TAU/n/2);
+   ctx.textAlign="right";
+   ctx.fillStyle="#56352e";
+   ctx.font=n>18 ? "bold 14px Arial" : "bold 17px Arial";
+
+   let text=available[i];
+
+   if(text.length>18){
+     text=text.substring(0,17)+"…";
+   }
+
+   ctx.fillText(text,r-15,5);
+   ctx.restore();
+ }
+
+ ctx.beginPath();
+ ctx.arc(c,c,55,0,TAU);
+ ctx.fillStyle="#b85f6d";
+ ctx.fill();
+
+ ctx.fillStyle="#fff";
+ ctx.font="bold 17px Arial";
+ ctx.textAlign="center";
+ ctx.fillText("SB",c,c+6);
+}
+
+function updateHistory(){
+
+ history.innerHTML="";
+
+ results.forEach((item,i)=>{
+   const li=document.createElement("li");
+   li.textContent=item;
+   history.appendChild(li);
+ });
+
+ if(results.length===0){
+   history.innerHTML="<li>No spins yet</li>";
+ }
+}
+
+function spin(){
+
+ if(busy || available.length===0 || results.length>=15) return;
+
+ busy=true;
+ btn.disabled=true;
+
+ const n=available.length;
+
+ const selectedIndex=Math.floor(Math.random()*n);
+ const selected=available[selectedIndex];
+
+ const segment=TAU/n;
+
+ /*
+   Pointer is at the top.
+   Rotate so the selected segment finishes under pointer.
+ */
+
+ const targetAngle=-(selectedIndex*segment+segment/2);
+
+ const current=rotation;
+ const extra=TAU*(5+Math.floor(Math.random()*3));
+
+ const finalRotation=current+
+   extra+
+   targetAngle-
+   (current%TAU);
+
+ rotation=finalRotation;
+
+ const start=current;
+ const duration=4000;
+ const startTime=performance.now();
+
+ function animate(now){
+
+   const progress=Math.min((now-startTime)/duration,1);
+
+   const eased=1-Math.pow(1-progress,4);
+
+   const angle=start+(finalRotation-start)*eased;
+
+   canvas.style.transform="rotate("+angle+"rad)";
+
+   if(progress<1){
+     requestAnimationFrame(animate);
+   }else{
+
+     available.splice(selectedIndex,1);
+     results.push(selected);
+
+     result.innerHTML=
+       "<strong>Selected: "+selected+"</strong>"+
+       "Spin "+results.length+" of 15";
+
+     updateHistory();
+     draw();
+
+     busy=false;
+
+     if(results.length>=15 || available.length===0){
+       btn.disabled=true;
+       btn.textContent="🎉 15 SPINS COMPLETE";
+     }else{
+       btn.disabled=false;
+     }
+   }
+ }
+
+ requestAnimationFrame(animate);
+}
+
+btn.addEventListener("click",spin);
+
+document.getElementById("send").addEventListener("click",function(){
+
+ const customer=document.getElementById("customer").value.trim();
+ const order=document.getElementById("order").value.trim();
+
+ if(!customer){
+   alert("Please enter the customer name first.");
+   return;
+ }
+
+ if(results.length===0){
+   alert("Please spin the wheel first.");
+   return;
+ }
+
+ let message=
+ "🌸 SIMPLY BLESSED SCOOP ORDER 🌸\n\n"+
+ "Customer: "+customer+"\n"+
+ "Order: "+(order || "Not provided")+"\n\n"+
+ "SCOOP RESULTS:\n";
+
+ results.forEach((item,i)=>{
+   message+=(i+1)+". "+item+"\n";
+ });
+
+ message+="\nTotal spins: "+results.length;
+
+ const phone="27768370983";
+
+ const url=
+ "https://wa.me/"+phone+
+ "?text="+encodeURIComponent(message);
+
+ window.open(url,"_blank");
+});
+
+draw();
+updateHistory();
+
+</script>
+</body>
+</html><div class="info"><b>How it works:</b> Tap the button and the wheel randomly selects one item. Each selected item is removed, so every spin chooses a different item. Maximum 15 spins.</div>
 <div class="history" id="history"><b>Your selected scoops:</b><br></div>
 </div>
 </div>
